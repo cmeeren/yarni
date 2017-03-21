@@ -1,7 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <Version>0.1.0</Version>
+    <Authors>Christer van der Meeren</Authors>
+    <Company />
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
+  </ItemGroup>
 
 </Project>
