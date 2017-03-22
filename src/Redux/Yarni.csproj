@@ -5,6 +5,8 @@
     <Version>0.1.0</Version>
     <Authors>Christer van der Meeren</Authors>
     <Company />
+    <AssemblyName>Yarni</AssemblyName>
+    <RootNamespace>Yarni</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

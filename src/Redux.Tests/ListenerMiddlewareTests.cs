@@ -5,7 +5,7 @@ using System;
 
 using NUnit.Framework;
 
-namespace Redux.Tests
+namespace Yarni.Tests
 {
     [TestFixture]
     public class ListenerMiddlewareTests

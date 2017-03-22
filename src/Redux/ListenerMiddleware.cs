@@ -1,4 +1,4 @@
-﻿namespace Redux
+﻿namespace Yarni
 {
     using System;
 

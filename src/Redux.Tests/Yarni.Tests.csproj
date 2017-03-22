@@ -51,9 +51,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Redux\Redux.csproj">
+    <ProjectReference Include="..\Redux\Yarni.csproj">
       <Project>{9036662c-b1f7-4084-a76d-395d36ff023a}</Project>
-      <Name>Redux</Name>
+      <Name>Yarni</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

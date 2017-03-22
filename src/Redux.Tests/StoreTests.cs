@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 
-namespace Redux.Tests
+namespace Yarni.Tests
 {
     [TestFixture]
     public class StoreTests
