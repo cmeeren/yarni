@@ -7,8 +7,8 @@
     <ProjectGuid>{0F4C7694-788F-4A5C-A674-422A0BB1FBF2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Redux.Tests</RootNamespace>
-    <AssemblyName>Redux.Tests</AssemblyName>
+    <RootNamespace>Yarni.Tests</RootNamespace>
+    <AssemblyName>Yarni.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -51,7 +51,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Redux\Yarni.csproj">
+    <ProjectReference Include="..\Yarni\Yarni.csproj">
       <Project>{9036662c-b1f7-4084-a76d-395d36ff023a}</Project>
       <Name>Yarni</Name>
     </ProjectReference>

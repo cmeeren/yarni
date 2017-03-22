@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yarni", "Redux\Yarni.csproj", "{9036662C-B1F7-4084-A76D-395D36FF023A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yarni", "Yarni\Yarni.csproj", "{9036662C-B1F7-4084-A76D-395D36FF023A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yarni.Tests", "Redux.Tests\Yarni.Tests.csproj", "{0F4C7694-788F-4A5C-A674-422A0BB1FBF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yarni.Tests", "Yarni.Tests\Yarni.Tests.csproj", "{0F4C7694-788F-4A5C-A674-422A0BB1FBF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
