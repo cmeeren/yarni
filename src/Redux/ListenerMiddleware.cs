@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Redux
+﻿namespace Redux
 {
+    using System;
+
     public class ListenerMiddleware<TState>
     {
         private readonly AsyncListener<TState>[] listeners;
@@ -17,7 +17,7 @@ namespace Redux
             {
                 TState preActionState = store.State;
                 next(action);
-                foreach (AsyncListener<TState> listener in listeners)
+                foreach (AsyncListener<TState> listener in this.listeners)
                 {
                     listener(action, preActionState, store.Dispatch);
                 }

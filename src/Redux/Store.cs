@@ -1,7 +1,7 @@
-﻿using JetBrains.Annotations;
-
-namespace Redux
+﻿namespace Redux
 {
+    using JetBrains.Annotations;
+
     /// <inheritdoc />
     public class Store<TState> : IStore<TState>
     {
@@ -12,11 +12,11 @@ namespace Redux
         {
             add
             {
-                stateChangedHandler += value;
-                value.Invoke(State);
+                this.stateChangedHandler += value;
+                value.Invoke(this.State);
             }
             // ReSharper disable once DelegateSubtraction (OK since we're removing a single value)
-            remove => stateChangedHandler -= value;
+            remove => this.stateChangedHandler -= value;
         }
 
         private readonly object syncRoot = new object();
@@ -27,11 +27,8 @@ namespace Redux
         public Store(Reducer<TState> reducer, TState initialState = default(TState), params Middleware<TState>[] middlewares)
         {
             this.reducer = reducer;
-            dispatcher = ApplyMiddlewares(middlewares);
-            State = initialState;
-
-            // TODO: Doesn't seem to be needed - can anything be subscribed before the constructor has completed?
-            stateChangedHandler?.Invoke(State);
+            this.dispatcher = this.ApplyMiddlewares(middlewares);
+            this.State = initialState;
         }
 
         /// <inheritdoc />
@@ -41,12 +38,12 @@ namespace Redux
         /// <inheritdoc />
         public void Dispatch([CanBeNull] object action)
         {
-            dispatcher(action);
+            this.dispatcher(action);
         }
 
         private Dispatcher ApplyMiddlewares(params Middleware<TState>[] middlewares)
         {
-            Dispatcher dispatcher = DispatchToReducer;
+            Dispatcher dispatcher = this.DispatchToReducer;
             foreach (Middleware<TState> middleware in middlewares)
             {
                 dispatcher = middleware(this)(dispatcher);
@@ -56,11 +53,11 @@ namespace Redux
 
         private void DispatchToReducer(object action)
         {
-            lock (syncRoot)
+            lock (this.syncRoot)
             {
-                State = reducer(State, action);
+                this.State = this.reducer(this.State, action);
             }
-            stateChangedHandler?.Invoke(State);
+            this.stateChangedHandler?.Invoke(this.State);
         }
     }
 }

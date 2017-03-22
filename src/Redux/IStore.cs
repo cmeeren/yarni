@@ -1,7 +1,7 @@
-﻿using JetBrains.Annotations;
-
-namespace Redux
+﻿namespace Redux
 {
+    using JetBrains.Annotations;
+
     /// <summary>
     ///     Represents a store that encapsulates a state tree and is used to dispatch actions to update the
     ///     state tree.
