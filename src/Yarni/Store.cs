@@ -24,7 +24,7 @@
         private readonly Reducer<TState> reducer;
         private readonly Dispatcher dispatcher;
 
-        public Store(Reducer<TState> reducer, TState initialState = default(TState), params Middleware<TState>[] middlewares)
+        public Store(Reducer<TState> reducer, TState initialState, params Middleware<TState>[] middlewares)
         {
             this.reducer = reducer;
             this.dispatcher = this.ApplyMiddlewares(middlewares);
@@ -32,7 +32,6 @@
         }
 
         /// <inheritdoc />
-        [CanBeNull]
         public TState State { get; private set; }
 
         /// <inheritdoc />
@@ -43,12 +42,12 @@
 
         private Dispatcher ApplyMiddlewares(params Middleware<TState>[] middlewares)
         {
-            Dispatcher dispatcher = this.DispatchToReducer;
+            Dispatcher dispatch = this.DispatchToReducer;
             foreach (Middleware<TState> middleware in middlewares)
             {
-                dispatcher = middleware(this)(dispatcher);
+                dispatch = middleware(this)(dispatch);
             }
-            return dispatcher;
+            return dispatch;
         }
 
         private void DispatchToReducer(object action)

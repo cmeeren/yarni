@@ -11,17 +11,7 @@ namespace Yarni.Tests
     public class StoreTests
     {
         [Test]
-        public void When_StoreInitializedWithoutState_Should_HaveDefaultState()
-        {
-            // Act
-            var store = new Store<object>(Reducers.Passthrough);
-
-            // Assert
-            Assert.That(store.State, Is.Null);
-        }
-
-        [Test]
-        public void When_StoreInitializedWithInitialState_Should_HaveCorrectInitialState()
+        public void When_StoreInitialized_Should_HaveCorrectInitialState()
         {
             // Act
             var initialState = new object();
@@ -35,14 +25,15 @@ namespace Yarni.Tests
         public void When_ActionDispatched_Should_ReduceState()
         {
             // Arrange
-            var expectedState = new object();
-            var store = new Store<object>(Reducers.Return(expectedState));
+            var initialState = new object();
+            var reducedState = new object();
+            var store = new Store<object>(Reducers.Return(reducedState), initialState);
 
             // Act
             store.Dispatch(null);
 
             // Assert
-            Assert.That(store.State, Is.SameAs(expectedState));
+            Assert.That(store.State, Is.SameAs(reducedState));
         }
 
         [Test]
@@ -50,7 +41,7 @@ namespace Yarni.Tests
         {
             // Arrange
             var eventWasRaised = false;
-            var store = new Store<object>(Reducers.Passthrough);
+            var store = new Store<object>(Reducers.Passthrough, new object());
             store.StateChanged += _ => eventWasRaised = true;
 
             // Act
@@ -66,7 +57,7 @@ namespace Yarni.Tests
             // Arrange
             var newState = new object();
             object eventState = null;
-            var store = new Store<object>(Reducers.Return(newState));
+            var store = new Store<object>(Reducers.Return(newState), new object());
             store.StateChanged += state => eventState = state;
 
             // Act
@@ -84,7 +75,7 @@ namespace Yarni.Tests
             object actionReceivedByMiddleware = null;
 
             var middleware = new Middleware<object>(store1 => dispatcher => action => actionReceivedByMiddleware = action);
-            var store = new Store<object>(Reducers.Passthrough, null, middleware);
+            var store = new Store<object>(Reducers.Passthrough, new object(), middleware);
 
             // Act
             store.Dispatch(dispatchedAction);
@@ -98,29 +89,29 @@ namespace Yarni.Tests
         {
             // Arrange
             var i = 0;
-            var middleware1CalledPosition = 0;
-            var middleware2CalledPosition = 0;
+            var outerMiddlewareCalledPosition = 0;
+            var innerMiddlewareCalledPosition = 0;
             var reducerCalledPosition = 0;
-            var middleware1 = new Middleware<object>(
+            var outerMiddleware = new Middleware<object>(
                 store1 => next => action =>
                 {
-                    middleware1CalledPosition = ++i;
+                    outerMiddlewareCalledPosition = ++i;
                     next(action);
                 });
-            var middleware2 = new Middleware<object>(
+            var innerMiddleware = new Middleware<object>(
                 store2 => next => action =>
                 {
-                    middleware2CalledPosition = ++i;
+                    innerMiddlewareCalledPosition = ++i;
                     next(action);
                 });
-            var store = new Store<object>((state, action) => reducerCalledPosition = ++i, null, middleware2, middleware1);
+            var store = new Store<object>((state, action) => reducerCalledPosition = ++i, new object(), innerMiddleware, outerMiddleware);
 
             // Act
             store.Dispatch(null);
 
             // Assert
-            Assert.That(middleware1CalledPosition, Is.EqualTo(1));
-            Assert.That(middleware2CalledPosition, Is.EqualTo(2));
+            Assert.That(outerMiddlewareCalledPosition, Is.EqualTo(1));
+            Assert.That(innerMiddlewareCalledPosition, Is.EqualTo(2));
             Assert.That(reducerCalledPosition, Is.EqualTo(3));
         }
 
@@ -130,7 +121,7 @@ namespace Yarni.Tests
             // Arrange
             var reducerWasCalled = false;
             var middleware = new Middleware<object>(store1 => next => action => next(action));
-            var store = new Store<object>((state, action) => reducerWasCalled = true, null, middleware);
+            var store = new Store<object>((state, action) => reducerWasCalled = true, new object(), middleware);
 
             // Act
             store.Dispatch(null);
@@ -145,7 +136,7 @@ namespace Yarni.Tests
             // Arrange
             var reducerWasCalled = false;
             var middleware = new Middleware<object>(store1 => next => action => { });
-            var store = new Store<object>((state, action) => reducerWasCalled = true, null, middleware);
+            var store = new Store<object>((state, action) => reducerWasCalled = true, new object(), middleware);
 
             // Act
             store.Dispatch(null);
@@ -158,15 +149,15 @@ namespace Yarni.Tests
         public void When_EventHandlerIsAdded_Should_ImmediatelyInvokeNewEventHandler()
         {
             // Arrange
-            var eventHandlerCalledTimes = 0;
-            var eventHandler = new StateChangedHandler<object>(state => eventHandlerCalledTimes++);
-            var store = new Store<object>((state, action) => state);
+            var eventHandlerWasCalled = false;
+            var eventHandler = new StateChangedHandler<object>(state => eventHandlerWasCalled = true);
+            var store = new Store<object>(Reducers.Passthrough, new object());
 
             // Act
             store.StateChanged += eventHandler;
 
             // Assert
-            Assert.That(eventHandlerCalledTimes, Is.EqualTo(1));
+            Assert.That(eventHandlerWasCalled);
         }
 
         [Test]

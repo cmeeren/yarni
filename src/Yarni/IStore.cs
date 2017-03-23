@@ -7,14 +7,13 @@
     ///     state tree.
     /// </summary>
     /// <typeparam name="TState">The state tree type.</typeparam>
-    public interface IStore<TState>
+    public interface IStore<out TState>
     {
         /// <summary>Dispatches an action to the store.</summary>
         /// <param name="action">The action to dispatch.</param>
         void Dispatch([CanBeNull] object action);
 
         /// <summary>Gets the current state tree.</summary>
-        [CanBeNull]
         TState State { get; }
 
         /// <summary>Occurs when the state tree has been updated. Delegates are immediately called upon subscription.</summary>
