@@ -2,14 +2,16 @@
 {
     using System;
 
+    /// <summary>Provides a middleware that raises an event when an action is received.</summary>
+    /// <remarks>
+    ///     The action is passed down the middleware chain before raising the event. Event handlers are provided
+    ///     with the state before the action was passed down.
+    /// </remarks>
+    /// <typeparam name="TState">The state tree type.</typeparam>
     public class ListenerMiddleware<TState>
     {
-        private readonly AsyncListener<TState>[] listeners;
-
-        public ListenerMiddleware(params AsyncListener<TState>[] listeners)
-        {
-            this.listeners = listeners;
-        }
+        /// <summary>Occurs when the middleware receives an action.</summary>
+        public event Listener<TState> ActionReceived;
 
         public Func<Dispatcher, Dispatcher> CreateMiddleware(IStore<TState> store)
         {
@@ -17,10 +19,7 @@
             {
                 TState preActionState = store.State;
                 next(action);
-                foreach (AsyncListener<TState> listener in this.listeners)
-                {
-                    listener(action, preActionState, store.Dispatch);
-                }
+                this.ActionReceived?.Invoke(action, preActionState, store.Dispatch);
             };
         }
     }

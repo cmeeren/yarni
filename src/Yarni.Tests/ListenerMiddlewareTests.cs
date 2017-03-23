@@ -1,12 +1,10 @@
 #pragma warning disable 1998
 // ReSharper disable ConvertToConstant.Local
 
-using System;
-
-using NUnit.Framework;
-
 namespace Yarni.Tests
 {
+    using NUnit.Framework;
+
     [TestFixture]
     public class ListenerMiddlewareTests
     {
@@ -15,22 +13,22 @@ namespace Yarni.Tests
         {
             // Arrange
             var dispatchedAction = new object();
-            object listener1Action = null;
-            object listener2Action = null;
-            var listener1 = new AsyncListener<object>(async (action, state, dispatcher) => listener1Action = action);
-            var listener2 = new AsyncListener<object>(async (action, state, dispatcher) => listener2Action = action);
-            var listenerMiddleware = new ListenerMiddleware<object>(listener1, listener2);
+            object actionReceivedByListener1 = null;
+            object actionReceivedByListener2 = null;
+
+            var listener1 = new Listener<object>((action, state, dispatcher) => actionReceivedByListener1 = action);
+            var listener2 = new Listener<object>((action, state, dispatcher) => actionReceivedByListener2 = action);
+            var listenerMiddleware = new ListenerMiddleware<object>();
+            listenerMiddleware.ActionReceived += listener1;
+            listenerMiddleware.ActionReceived += listener2;
             var store = new Store<object>((state, action) => state, null, listenerMiddleware.CreateMiddleware);
 
             // Act
             store.Dispatch(dispatchedAction);
 
             // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(listener1Action, Is.SameAs(dispatchedAction));
-                Assert.That(listener2Action, Is.SameAs(dispatchedAction));
-            });
+            Assert.That(actionReceivedByListener1, Is.SameAs(dispatchedAction));
+            Assert.That(actionReceivedByListener2, Is.SameAs(dispatchedAction));
         }
 
         [Test]
@@ -38,71 +36,64 @@ namespace Yarni.Tests
         {
             // Arrange
             var i = 0;
-            var reducerCalledOrder = 0;
-            var listenerCalledOrder = 0;
-            var listener = new AsyncListener<object>(async (action, state, dispatcher) => listenerCalledOrder = ++i);
-            var listenerMiddleware = new ListenerMiddleware<object>(listener);
-            var store = new Store<object>((state, action) => reducerCalledOrder = ++i, null, listenerMiddleware.CreateMiddleware);
+            var reducerCalledPosition = 0;
+            var listenerCalledPosition = 0;
+
+            var listener = new Listener<object>((action, state, dispatcher) => listenerCalledPosition = ++i);
+            var listenerMiddleware = new ListenerMiddleware<object>();
+            listenerMiddleware.ActionReceived += listener;
+            var store = new Store<object>((state, action) => reducerCalledPosition = ++i, null, listenerMiddleware.CreateMiddleware);
 
             // Act
             store.Dispatch(null);
 
             // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(reducerCalledOrder, Is.EqualTo(1));
-                Assert.That(listenerCalledOrder, Is.EqualTo(2));
-            });
+            Assert.That(reducerCalledPosition, Is.EqualTo(1));
+            Assert.That(listenerCalledPosition, Is.EqualTo(2));
         }
 
         [Test]
         public void Listener_Should_GetStateBeforeAction()
         {
             // Arrange
-            var oldState = new object();
-            object newState = null;
-            object listenerState = null;
-            var listener = new AsyncListener<object>(async (action, state, dispatcher) => listenerState = state);
-            var listenerMiddleware = new ListenerMiddleware<object>(listener);
-            var store = new Store<object>((state, action) => newState, null, listenerMiddleware.CreateMiddleware);
+            var initialState = new object();
+            var newState = new object();
+            object stateReceivedByListener = null;
+
+            var listener = new Listener<object>((action, state, dispatcher) => stateReceivedByListener = state);
+            var listenerMiddleware = new ListenerMiddleware<object>();
+            listenerMiddleware.ActionReceived += listener;
+            var store = new Store<object>((state, action) => newState, initialState, listenerMiddleware.CreateMiddleware);
 
             // Act
             store.Dispatch(null);
 
             // Assert
-            Assert.That(listenerState, Is.SameAs(newState));
+            Assert.That(stateReceivedByListener, Is.SameAs(initialState));
         }
 
         [Test]
         public void Listener_Should_GetWorkingDispatcher()
         {
             // Arrange
-            var dispatchedAction1 = new object();
-            var dispatchedAction2 = new object();
-            var listener = new AsyncListener<object>(async (action, state, dispatcher) =>
-            {
-                if (action == dispatchedAction1) dispatcher(dispatchedAction2);
-            });
-            var listenerMiddleware = new ListenerMiddleware<object>(listener);
-            var store = new Store<object>((state, action) => action, null, listenerMiddleware.CreateMiddleware);
+            var originalDispatchedAction = new object();
+            var actionDispatchedFromListener = new object();
+            object actionReceivedByReducer = null;
+
+            var listener = new Listener<object>(
+                (action, state, dispatcher) =>
+                {
+                    if (action == originalDispatchedAction) dispatcher(actionDispatchedFromListener);
+                });
+            var listenerMiddleware = new ListenerMiddleware<object>();
+            listenerMiddleware.ActionReceived += listener;
+            var store = new Store<object>((state, action) => actionReceivedByReducer = action, null, listenerMiddleware.CreateMiddleware);
 
             // Act
-            store.Dispatch(dispatchedAction1);
+            store.Dispatch(originalDispatchedAction);
 
             // Assert
-            Assert.That(store.State, Is.SameAs(dispatchedAction2));
-        }
-
-        [Test]
-        public void When_ExceptionRaisedInListener_Should_NotBubbleUp()
-        {
-            // Arrange
-            var listener = new AsyncListener<object>(async (action, state, dispatcher) => throw new Exception());
-            var listenerMiddleware = new ListenerMiddleware<object>(listener);
-            var store = new Store<object>((state, action) => action, null, listenerMiddleware.CreateMiddleware);
-
-            // Act/Assert
-            Assert.That(() => store.Dispatch(null), Throws.Nothing);
+            Assert.That(actionReceivedByReducer, Is.SameAs(actionDispatchedFromListener));
         }
     }
 }
