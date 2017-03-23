@@ -21,7 +21,7 @@ namespace Yarni.Tests
             var listenerMiddleware = new ListenerMiddleware<object>();
             listenerMiddleware.ActionReceived += listener1;
             listenerMiddleware.ActionReceived += listener2;
-            var store = new Store<object>((state, action) => state, null, listenerMiddleware.CreateMiddleware);
+            var store = new Store<object>(Reducers.Passthrough, null, listenerMiddleware.CreateMiddleware);
 
             // Act
             store.Dispatch(dispatchedAction);
@@ -63,7 +63,7 @@ namespace Yarni.Tests
             var listener = new Listener<object>((action, state, dispatcher) => stateReceivedByListener = state);
             var listenerMiddleware = new ListenerMiddleware<object>();
             listenerMiddleware.ActionReceived += listener;
-            var store = new Store<object>((state, action) => newState, initialState, listenerMiddleware.CreateMiddleware);
+            var store = new Store<object>(Reducers.Return(newState), initialState, listenerMiddleware.CreateMiddleware);
 
             // Act
             store.Dispatch(null);
