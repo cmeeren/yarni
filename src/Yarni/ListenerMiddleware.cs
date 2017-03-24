@@ -2,10 +2,14 @@
 {
     using System;
 
-    /// <summary>Provides a middleware that raises an event when an action is received.</summary>
+    /// <summary>
+    ///     Provides a middleware that raises an event when an action is received. The action is passed down the
+    ///     middleware chain before raising the event. Event handlers are provided with the state before the action
+    ///     was passed down.
+    /// </summary>
     /// <remarks>
-    ///     The action is passed down the middleware chain before raising the event. Event handlers are provided
-    ///     with the state before the action was passed down.
+    ///     Remember that if an event handler throws an exception, subsequent handlers will not get called. To
+    ///     ensure that all subscribed listeners receive an action, never throw exceptions from the listeners.
     /// </remarks>
     /// <typeparam name="TState">The state tree type.</typeparam>
     public class ListenerMiddleware<TState>
