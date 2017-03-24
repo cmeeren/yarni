@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yarni\Yarni.csproj">
-      <Project>{9036662c-b1f7-4084-a76d-395d36ff023a}</Project>
+      <Project>{77395add-43c7-451b-a99b-6c8f540dc0f5}</Project>
       <Name>Yarni</Name>
     </ProjectReference>
   </ItemGroup>
