@@ -161,6 +161,25 @@ namespace Yarni.Tests
         }
 
         [Test]
+        public void When_EventHandlerIsRemoved_Should_NotBeInvokedOnSubsequentEvent()
+        {
+            // Arrange
+            bool eventHandlerWasCalled;
+            var eventHandler = new StateChangedHandler<object>(state => eventHandlerWasCalled = true);
+            var store = new Store<object>(Reducers.Passthrough, new object());
+
+            store.StateChanged += eventHandler;
+            eventHandlerWasCalled = false;
+
+            // Act
+            store.StateChanged -= eventHandler;
+            store.Dispatch(null);
+
+            // Assert
+            Assert.That(eventHandlerWasCalled, Is.False);
+        }
+
+        [Test]
         public async Task Expect_StoreIsThreadSafe()
         {
             // Arrange
