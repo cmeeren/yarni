@@ -8,9 +8,16 @@
     <AssemblyName>Yarni</AssemblyName>
     <RootNamespace>Yarni</RootNamespace>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Description>Yarni – Yet another Redux .NET implementation.</Description>
+    <Description>Yarni – Yet another Redux .NET implementation.
+
+Not intended for public consumption. Will likely not maintain this. Check out Redux.NET instead.</Description>
     <PackageProjectUrl>https://github.com/cmeeren/yarni</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/cmeeren/yarni/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.0\Yarni.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
