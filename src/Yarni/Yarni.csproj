@@ -7,6 +7,10 @@
     <Company />
     <AssemblyName>Yarni</AssemblyName>
     <RootNamespace>Yarni</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>Yarni – Yet another Redux .NET implementation.</Description>
+    <PackageProjectUrl>https://github.com/cmeeren/yarni</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/cmeeren/yarni/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
